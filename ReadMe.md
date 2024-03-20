@@ -4,7 +4,7 @@
 
 This is a Traefik plugin, which controls the inbound traffic, useful for billing related requirements.
 
-We use this with the [Gateway](../Gateway).
+We use this with the [Gateway](https://github.com/RSS3-Network/Gateway).
 
 Or you can also develop your own billing backend.
 
