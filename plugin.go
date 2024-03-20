@@ -14,20 +14,20 @@ import (
 // Config the plugin configuration.
 type Config struct {
 	// Request related
-	KeyHeader string
+	KeyHeader string `json:"key_header,omitempty"`
 
 	// Access Log Report
-	KafkaBrokers []string
-	KafkaTopic   string
+	KafkaBrokers []string `json:"kafka_brokers,omitempty"`
+	KafkaTopic   string   `json:"kafka_topic,omitempty"`
 
 	// State management
-	EtcdEndpoints []string
+	EtcdEndpoints []string `json:"etcd_endpoints,omitempty"`
 
 	// Rate Limit
-	MaxSources int
-	Average    int64
-	Period     time.Duration
-	Burst      int64
+	MaxSources int           `json:"max_sources,omitempty"`
+	Average    int64         `json:"average,omitempty"`
+	Period     time.Duration `json:"period,omitempty"`
+	Burst      int64         `json:"burst,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.

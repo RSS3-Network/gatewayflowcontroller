@@ -14,7 +14,7 @@ services:
     ports:
       - "2379:2379/tcp"
     networks:
-      - gateway_common_network
+      - gateway_flowcontroller_network
 
   ## Redpanda (kafka)
   redpanda-0:
@@ -44,7 +44,7 @@ services:
     volumes:
       - redpanda-0:/var/lib/redpanda/data
     networks:
-      - gateway_common_network
+      - gateway_flowcontroller_network
     ports:
       - 18081:18081
       - 18082:18082
@@ -53,7 +53,7 @@ services:
   redpanda-console:
     image: docker.redpanda.com/redpandadata/console:v2.4.5
     networks:
-      - gateway_common_network
+      - gateway_flowcontroller_network
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
     environment:
@@ -74,7 +74,7 @@ services:
       - redpanda-0
 
 networks:
-  gateway_common_network:
+  gateway_flowcontroller_network:
     driver: bridge
 
 volumes:

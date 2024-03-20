@@ -1,0 +1,14 @@
+# Static configuration
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+
+experimental:
+  localPlugins:
+    flowcontroller:
+      moduleName: github.com/RSS3-Network/Gateway-FlowController
