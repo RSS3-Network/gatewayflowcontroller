@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
+	flowcontroller "github.com/RSS3-Network/Gateway-FlowController"
 	"github.com/rss3-network/gateway-common/accesslog"
 	"github.com/rss3-network/gateway-common/control"
-	"github.com/rss3-network/gateway-flowcontroller"
 )
 
 const (
