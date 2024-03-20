@@ -1,0 +1,17 @@
+displayName: RSS3 Gateway Flow Controller
+
+type: middleware
+
+import: github.com/rss3-network/gateway-flowcontroller
+
+summary: Flow Controller for RSS3 Gateway
+
+testData:
+  KeyHeader: "X-API-Key"
+  KafkaBrokers: [] # Disable accesslog
+  KafkaTopic: "gateway.log.access"
+  EtcdEndpoints: [] # Disable controller
+  MaxSources: 65536
+  Average: 20
+  Period: 1m
+  Burst: 60
