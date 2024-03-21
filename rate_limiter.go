@@ -1,4 +1,4 @@
-package GatewayFlowController
+package gatewayflowcontroller
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/RSS3-Network/GatewayFlowController/holster/collections"
+	"github.com/RSS3-Network/gatewayflowcontroller/holster/collections"
 	"golang.org/x/time/rate"
 )
 
