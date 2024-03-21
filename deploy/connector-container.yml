@@ -1,6 +1,6 @@
 listen: ":1234"
 kafka_brokers:
-  - "redpanda-0:19092"
+  - "redpanda-0:9092"
 kafka_topic: "gateway.log.access"
 etcd_endpoints:
   - "etcd:2379"
