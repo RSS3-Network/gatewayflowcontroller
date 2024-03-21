@@ -259,6 +259,8 @@ func fullPhase2(ctx context.Context, t *testing.T, cfg *flowcontroller.Config, h
 	wg.Wait()
 
 	// Validate requests
+	statusCounter := int64(0)
+
 	for i := int64(0); i < requestCountPerRound; i++ {
 		l := <-*receiveLogChan
 
@@ -270,9 +272,13 @@ func fullPhase2(ctx context.Context, t *testing.T, cfg *flowcontroller.Config, h
 			t.Error(fmt.Errorf("phase 2: unexpedted path (%s) at received log (%d)", l.Path, i))
 		}
 
-		if i >= cfg.Burst && l.Status != http.StatusPaymentRequired {
-			t.Error(fmt.Errorf("phase 2: unexpected status (%d) at received log (%d)", l.Status, i))
+		if l.Status == http.StatusPaymentRequired {
+			statusCounter++
 		}
+	}
+
+	if statusCounter != requestCountPerRound-cfg.Burst {
+		t.Error(fmt.Errorf("phase 2: unexpected status count: %d", statusCounter))
 	}
 }
 
@@ -308,6 +314,8 @@ func fullPhase3(ctx context.Context, t *testing.T, cfg *flowcontroller.Config, h
 	wg.Wait()
 
 	// Validate requests
+	statusCounter := int64(0)
+
 	for i := int64(0); i < requestCountPerRound; i++ {
 		l := <-*receiveLogChan
 
@@ -319,9 +327,13 @@ func fullPhase3(ctx context.Context, t *testing.T, cfg *flowcontroller.Config, h
 			t.Error(fmt.Errorf("phase 3: unexpedted path (%s) at received log (%d)", l.Path, i))
 		}
 
-		if i >= cfg.Burst && l.Status != http.StatusTooManyRequests {
-			t.Error(fmt.Errorf("phase 3: unexpected status (%d) at received log (%d)", l.Status, i))
+		if l.Status == http.StatusTooManyRequests {
+			statusCounter++
 		}
+	}
+
+	if statusCounter != requestCountPerRound-cfg.Burst {
+		t.Error(fmt.Errorf("phase 3: unexpected status count: %d", statusCounter))
 	}
 }
 
@@ -421,6 +433,8 @@ func fullPhase5(ctx context.Context, t *testing.T, cfg *flowcontroller.Config, h
 	wg.Wait()
 
 	// Validate requests
+	statusCounter := int64(0)
+
 	for i := int64(0); i < requestCountPerRound; i++ {
 		l := <-*receiveLogChan
 
@@ -432,9 +446,13 @@ func fullPhase5(ctx context.Context, t *testing.T, cfg *flowcontroller.Config, h
 			t.Error(fmt.Errorf("phase 5: unexpedted path (%s) at received log (%d)", l.Path, i))
 		}
 
-		if i >= cfg.Burst && l.Status != http.StatusTooManyRequests {
-			t.Error(fmt.Errorf("phase 5: unexpected status (%d) at received log (%d)", l.Status, i))
+		if l.Status == http.StatusTooManyRequests {
+			statusCounter++
 		}
+	}
+
+	if statusCounter != requestCountPerRound-cfg.Burst {
+		t.Error(fmt.Errorf("phase 5: unexpected status count: %d", statusCounter))
 	}
 
 	// Clean up
