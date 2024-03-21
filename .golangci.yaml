@@ -1,5 +1,8 @@
 run:
   timeout: 10m
+  skip-dirs:
+    - holster
+
 
 linters:
   enable:
@@ -30,3 +33,7 @@ linters:
 issues:
   max-issues-per-linter: 0 # Unlimited
   max-same-issues: 0 # Unlimited
+
+# Not working with our version (requires 1.57), see https://github.com/golangci/golangci-lint/pull/4509
+#  exclude-dirs:
+#    - holster

@@ -1,4 +1,4 @@
-package flowcontroller
+package Gateway_FlowController
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mailgun/holster/v4/collections"
+	"github.com/RSS3-Network/Gateway-FlowController/holster/collections"
 	"golang.org/x/time/rate"
 )
 

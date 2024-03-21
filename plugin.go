@@ -1,14 +1,14 @@
-package flowcontroller
+package Gateway_FlowController
 
 import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/rpc"
 	"os"
 	"time"
 
-	"github.com/rss3-network/gateway-common/accesslog"
-	"github.com/rss3-network/gateway-common/control"
+	"github.com/RSS3-Network/Gateway-FlowController/types"
 )
 
 // Config the plugin configuration.
@@ -16,12 +16,8 @@ type Config struct {
 	// Request related
 	KeyHeader string `json:"key_header,omitempty"`
 
-	// Access Log Report
-	KafkaBrokers []string `json:"kafka_brokers,omitempty"`
-	KafkaTopic   string   `json:"kafka_topic,omitempty"`
-
-	// State management
-	EtcdEndpoints []string `json:"etcd_endpoints,omitempty"`
+	// Connector
+	ConnectorRPC string `json:"connector_rpc,omitempty"`
 
 	// Rate Limit
 	MaxSources int           `json:"max_sources,omitempty"`
@@ -33,14 +29,12 @@ type Config struct {
 // CreateConfig creates the default plugin configuration.
 func CreateConfig() *Config {
 	return &Config{
-		KeyHeader:     "X-API-Key", // Default header
-		KafkaBrokers:  []string{"localhost:19092"},
-		KafkaTopic:    "gateway.log.access",
-		EtcdEndpoints: []string{"localhost:2379"},
-		MaxSources:    65535,
-		Average:       20,
-		Period:        time.Minute,
-		Burst:         60,
+		KeyHeader:    "X-API-Key", // Default header
+		ConnectorRPC: "",          // Disable connector
+		MaxSources:   65535,
+		Average:      20,
+		Period:       time.Minute,
+		Burst:        60,
 	}
 }
 
@@ -55,41 +49,27 @@ type Core struct {
 type FlowController struct {
 	Core
 
-	keyHeader       string
-	accesslogClient *accesslog.ProducerClient
-	controlClient   *control.StateClientReader
+	keyHeader string
+	connector *rpc.Client
 }
 
 // New created a new plugin.
 func New(_ context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
 	var (
-		accesslogClient *accesslog.ProducerClient  //= nil
-		controlClient   *control.StateClientReader //= nil
-		err             error
+		connector *rpc.Client
+		err       error
 	)
 
 	// Whether to use full mode
 	fullMode := true
 
-	if len(config.KafkaBrokers) > 0 {
-		// Initialize accesslog
-		accesslogClient, err = accesslog.NewProducer(config.KafkaBrokers, config.KafkaTopic)
+	if config.ConnectorRPC != "" {
+		connector, err = rpc.Dial("tcp", config.ConnectorRPC)
 		if err != nil {
-			return nil, fmt.Errorf("init accesslog: %w", err)
+			return nil, fmt.Errorf("init connector: %w", err)
 		}
 	} else {
-		_, _ = os.Stderr.WriteString("no kafka brokers found, skip accesslog init\n")
-		fullMode = false
-	}
-
-	if len(config.EtcdEndpoints) > 0 {
-		// Initialize control
-		controlClient, err = control.NewReader(config.EtcdEndpoints)
-		if err != nil {
-			return nil, fmt.Errorf("init controller: %w", err)
-		}
-	} else {
-		_, _ = os.Stderr.WriteString("no etcd endpoints found, skip controller init\n")
+		_, _ = os.Stderr.WriteString("no connector rpc found, skip connector init\n")
 		fullMode = false
 	}
 
@@ -116,9 +96,8 @@ func New(_ context.Context, next http.Handler, config *Config, name string) (htt
 	return &FlowController{
 		Core: core,
 
-		keyHeader:       config.KeyHeader,
-		accesslogClient: accesslogClient,
-		controlClient:   controlClient,
+		keyHeader: config.KeyHeader,
+		connector: connector,
 	}, nil
 }
 
@@ -131,11 +110,8 @@ func (fc *Core) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 // The Full processor
 func (fc *FlowController) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-	// Prepare context
-	ctx := req.Context()
-
 	// Prepare the access log
-	l := accesslog.Log{
+	l := types.AccesslogProduceLogArgs{
 		Path:      req.URL.Path,
 		Timestamp: time.Now(),
 	}
@@ -149,24 +125,35 @@ func (fc *FlowController) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if key := req.Header.Get(fc.keyHeader); key == "" {
 		// No key provided, use common rate limit
 		proceed = fc.rateLimiter.RateLimit(rwp, req, nil)
-	} else if account, keyID, err := fc.controlClient.CheckKey(ctx, key); err != nil {
-		// Key provided, but failed to check, apply rate limit
-		_, _ = os.Stderr.WriteString(fmt.Sprintf("check key %s: %v\n", key, err))
-		proceed = fc.rateLimiter.RateLimit(rwp, req, nil)
-	} else if account == nil {
-		// Key check succeeded, but no such key
-		proceed = fc.rateLimiter.RateLimit(rwp, req, nil)
 	} else {
-		// Has valid key, record it
-		l.KeyID = keyID
+		// Query key
+		var checkKeyReply types.ControlCheckKeyReply
 
-		// Check whether the account of this key has been paused
-		if paused, err := fc.controlClient.CheckAccountPaused(ctx, *account); err != nil {
-			// Failed to check account, skip rate limit
-			_, _ = os.Stderr.WriteString(fmt.Sprintf("check account %s: %v\n", *account, err))
-		} else if paused {
-			// Account paused, apply rate limit by account
-			proceed = fc.rateLimiter.RateLimit(rwp, req, account)
+		if err := fc.connector.Call("Connector.ControlCheckKey", &types.ControlCheckKeyArgs{
+			Key: key,
+		}, &checkKeyReply); err != nil {
+			// Key provided, but failed to check, apply rate limit
+			_, _ = os.Stderr.WriteString(fmt.Sprintf("check key %s: %v\n", key, err))
+			proceed = fc.rateLimiter.RateLimit(rwp, req, nil)
+		} else if checkKeyReply.Account == nil {
+			// Key check succeeded, but no such key
+			proceed = fc.rateLimiter.RateLimit(rwp, req, nil)
+		} else {
+			// Has valid key, record it
+			l.KeyID = checkKeyReply.KeyID
+
+			var checkAccountPausedReply types.CheckAccountPausedReply
+
+			// Check whether the account of this key has been paused
+			if err := fc.connector.Call("Connector.ControlCheckAccountPaused", &types.CheckAccountPausedArgs{
+				Account: *checkKeyReply.Account,
+			}, &checkAccountPausedReply); err != nil {
+				// Failed to check account, skip rate limit
+				_, _ = os.Stderr.WriteString(fmt.Sprintf("check account %s: %v\n", *checkKeyReply.Account, err))
+			} else if checkAccountPausedReply.IsPaused {
+				// Account paused, apply rate limit by account
+				proceed = fc.rateLimiter.RateLimit(rwp, req, checkKeyReply.Account)
+			}
 		}
 	}
 
@@ -179,7 +166,7 @@ func (fc *FlowController) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	l.Status = rwp.StatusCode()
 	go func() {
 		l := l
-		if err := fc.accesslogClient.ProduceLog(&l); err != nil {
+		if err := fc.connector.Call("Connector.AccesslogProduceLog", &l, nil); err != nil {
 			_, _ = os.Stderr.WriteString(fmt.Sprintf("produce log %v: %v\n", l, err))
 		}
 	}()
@@ -187,6 +174,5 @@ func (fc *FlowController) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 // Stop will not be called, it's just a resource release reminder
 func (fc *FlowController) Stop() {
-	fc.accesslogClient.Stop()
-	fc.controlClient.Stop()
+	_ = fc.connector.Close()
 }

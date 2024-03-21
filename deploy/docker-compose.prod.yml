@@ -18,8 +18,21 @@ services:
       - ./traefik.yml:/etc/traefik/traefik.yml
     labels:
       - "http.routers.whoami.middlewares=['flowcontroller']"
-      - "middlewares.my-plugin.plugin.flowcontroller.kafka_brokers=['redpanda-0:19092']"
-      - "middlewares.my-plugin.plugin.flowcontroller.etcd_endpoints=['etcd:2379']"
+      - "middlewares.my-plugin.plugin.flowcontroller.connector_rpc=connector:1234"
+    depends_on:
+      - connector
+      - whoami
+
+  connector:
+    # image:
+    build:
+      context: ../
+      dockerfile: connector.Dockerfile
+    volumes:
+      - ./connector-container.yml:/app/config.yml
+    depends_on:
+      - etcd
+      - redpanda-0
 
   whoami:
     # A container that exposes an API to show its IP address

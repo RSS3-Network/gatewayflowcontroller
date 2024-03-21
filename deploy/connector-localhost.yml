@@ -1,0 +1,6 @@
+listen: ":1234"
+kafka_brokers:
+  - "localhost:19092"
+kafka_topic: "gateway.log.access"
+etcd_endpoints:
+  - "localhost:2379"

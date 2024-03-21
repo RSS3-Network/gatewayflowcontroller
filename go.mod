@@ -3,9 +3,9 @@ module github.com/RSS3-Network/Gateway-FlowController
 go 1.21.4
 
 require (
-	github.com/mailgun/holster/v4 v4.17.0
 	github.com/rss3-network/gateway-common v0.0.2
 	golang.org/x/time v0.5.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -16,9 +16,7 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/klauspost/compress v1.17.7 // indirect
 	github.com/pierrec/lz4/v4 v4.1.21 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/twmb/franz-go v1.16.1 // indirect
 	github.com/twmb/franz-go/pkg/kmsg v1.7.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.12 // indirect
