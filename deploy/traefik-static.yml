@@ -10,6 +10,8 @@ api:
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
+  file:
+    filename: /etc/traefik/dynamic.yml
 
 experimental:
   localPlugins:

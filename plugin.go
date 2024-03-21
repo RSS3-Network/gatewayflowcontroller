@@ -86,6 +86,8 @@ func New(_ context.Context, next http.Handler, config *Config, name string) (htt
 		rateLimiter: rateLimiter,
 	}
 
+	_, _ = os.Stdout.WriteString("gateway flow-controller start\n")
+
 	if !fullMode {
 		// Only enable core mode
 		_, _ = os.Stderr.WriteString("fallback to core mode\n")

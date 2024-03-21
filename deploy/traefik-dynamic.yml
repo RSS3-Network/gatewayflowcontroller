@@ -1,0 +1,6 @@
+http:
+  middlewares:
+    gfc:
+      plugin:
+        flowcontroller:
+          ConnectorRPC: connector:1234

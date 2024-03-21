@@ -15,10 +15,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       # Test this plugin
       - ../:/plugins-local/src/github.com/RSS3-Network/gatewayflowcontroller
-      - ./traefik.yml:/etc/traefik/traefik.yml
-    labels:
-      - "http.routers.whoami.middlewares=['flowcontroller']"
-      - "middlewares.my-plugin.plugin.flowcontroller.connector_rpc=connector:1234"
+      - ./traefik-static.yml:/etc/traefik/traefik.yml
+      - ./traefik-dynamic.yml:/etc/traefik/dynamic.yml
     depends_on:
       - connector
       - whoami
@@ -39,6 +37,7 @@ services:
     image: traefik/whoami
     labels:
       - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
+      - "traefik.http.routers.whoami.middlewares=gfc@file"
 
   etcd:
     image: bitnami/etcd:3.5.12
