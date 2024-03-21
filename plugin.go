@@ -1,4 +1,4 @@
-package Gateway_FlowController
+package GatewayFlowController
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/RSS3-Network/Gateway-FlowController/types"
+	"github.com/RSS3-Network/GatewayFlowController/types"
 )
 
 // Config the plugin configuration.

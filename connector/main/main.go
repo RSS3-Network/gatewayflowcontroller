@@ -8,7 +8,7 @@ import (
 	"net/rpc"
 	"os"
 
-	"github.com/RSS3-Network/Gateway-FlowController/connector"
+	"github.com/RSS3-Network/GatewayFlowController/connector"
 	"github.com/rss3-network/gateway-common/accesslog"
 	"github.com/rss3-network/gateway-common/control"
 	"gopkg.in/yaml.v3"

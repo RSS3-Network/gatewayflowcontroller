@@ -20,7 +20,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/RSS3-Network/Gateway-FlowController/holster/clock"
+	"github.com/RSS3-Network/GatewayFlowController/holster/clock"
 )
 
 type TTLMap struct {

@@ -1,4 +1,4 @@
-package Gateway_FlowController_test
+package GatewayFlowController_test
 
 import (
 	"context"
@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	flowcontroller "github.com/RSS3-Network/Gateway-FlowController"
-	"github.com/RSS3-Network/Gateway-FlowController/connector"
+	flowcontroller "github.com/RSS3-Network/GatewayFlowController"
+	"github.com/RSS3-Network/GatewayFlowController/connector"
 	"github.com/rss3-network/gateway-common/accesslog"
 	"github.com/rss3-network/gateway-common/control"
 )

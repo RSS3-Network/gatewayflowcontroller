@@ -1,4 +1,4 @@
-module github.com/RSS3-Network/Gateway-FlowController
+module github.com/RSS3-Network/GatewayFlowController
 
 go 1.21.4
 

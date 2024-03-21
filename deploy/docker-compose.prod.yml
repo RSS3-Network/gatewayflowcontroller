@@ -14,7 +14,7 @@ services:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
       # Test this plugin
-      - ../:/plugins-local/src/github.com/RSS3-Network/Gateway-FlowController
+      - ../:/plugins-local/src/github.com/RSS3-Network/GatewayFlowController
       - ./traefik.yml:/etc/traefik/traefik.yml
     labels:
       - "http.routers.whoami.middlewares=['flowcontroller']"

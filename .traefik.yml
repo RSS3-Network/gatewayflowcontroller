@@ -2,7 +2,7 @@ displayName: RSS3 Gateway Flow Controller
 
 type: middleware
 
-import: github.com/RSS3-Network/Gateway-FlowController
+import: github.com/RSS3-Network/GatewayFlowController
 
 summary: Flow Controller for RSS3 Gateway
 

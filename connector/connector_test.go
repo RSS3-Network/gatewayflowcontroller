@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/RSS3-Network/Gateway-FlowController/connector"
-	"github.com/RSS3-Network/Gateway-FlowController/types"
+	"github.com/RSS3-Network/GatewayFlowController/connector"
+	"github.com/RSS3-Network/GatewayFlowController/types"
 	"github.com/rss3-network/gateway-common/accesslog"
 	"github.com/rss3-network/gateway-common/control"
 )

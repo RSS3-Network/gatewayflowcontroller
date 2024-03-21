@@ -1,4 +1,4 @@
-package Gateway_FlowController_test
+package GatewayFlowController_test
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	flowcontroller "github.com/RSS3-Network/Gateway-FlowController"
+	flowcontroller "github.com/RSS3-Network/GatewayFlowController"
 )
 
 func TestCore(t *testing.T) {

@@ -1,4 +1,4 @@
-package Gateway_FlowController
+package GatewayFlowController
 
 import (
 	"net"
