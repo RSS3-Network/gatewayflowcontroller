@@ -14,4 +14,4 @@ providers:
 experimental:
   localPlugins:
     flowcontroller:
-      moduleName: github.com/RSS3-Network/GatewayFlowController
+      moduleName: github.com/RSS3-Network/gatewayflowcontroller
