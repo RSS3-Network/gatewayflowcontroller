@@ -1,43 +1,6 @@
 version: "3.8"
-name: gateway_flowcontroller_prod
+name: gateway_flowcontroller_test
 services:
-  traefik:
-    image: traefik:v2.11
-    # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
-    ports:
-      # The HTTP port
-      - "80:80"
-      # The Web UI (enabled by --api.insecure=true)
-      - "8080:8080"
-    volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
-      # Test this plugin
-      - ../:/plugins-local/src/github.com/RSS3-Network/gatewayflowcontroller
-      - ./traefik-static.yml:/etc/traefik/traefik.yml
-      - ./traefik-dynamic.yml:/etc/traefik/dynamic.yml
-    depends_on:
-      - connector
-      - whoami
-
-  connector:
-    # image:
-    build:
-      context: ../
-      dockerfile: connector.Dockerfile
-    volumes:
-      - ./connector-container.yml:/app/config.yml
-    depends_on:
-      - etcd
-      - redpanda-0
-
-  whoami:
-    # A container that exposes an API to show its IP address
-    image: traefik/whoami
-    labels:
-      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
-      - "traefik.http.routers.whoami.middlewares=gfc@file"
 
   etcd:
     image: bitnami/etcd:3.5.12
@@ -50,6 +13,8 @@ services:
       ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
     ports:
       - "2379:2379/tcp"
+    networks:
+      - gateway_flowcontroller_network
 
   ## Redpanda (kafka)
   redpanda-0:
@@ -78,35 +43,40 @@ services:
     image: docker.redpanda.com/redpandadata/redpanda:v23.3.9
     volumes:
       - redpanda-0:/var/lib/redpanda/data
+    networks:
+      - gateway_flowcontroller_network
     ports:
       - 18081:18081
       - 18082:18082
       - 19092:19092
       - 19644:9644
 
-  redpanda-console:
-    image: docker.redpanda.com/redpandadata/console:v2.4.5
-    entrypoint: /bin/sh
-    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
-    environment:
-      CONFIG_FILEPATH: /tmp/config.yml
-      CONSOLE_CONFIG_FILE: |
-        kafka:
-          brokers: ["redpanda-0:9092"]
-          schemaRegistry:
-            enabled: true
-            urls: ["http://redpanda-0:8081"]
-        redpanda:
-          adminApi:
-            enabled: true
-            urls: ["http://redpanda-0:9644"]
+#  redpanda-console:
+#    image: docker.redpanda.com/redpandadata/console:v2.4.5
+#    networks:
+#      - gateway_flowcontroller_network
+#    entrypoint: /bin/sh
+#    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
+#    environment:
+#      CONFIG_FILEPATH: /tmp/config.yml
+#      CONSOLE_CONFIG_FILE: |
+#        kafka:
+#          brokers: ["redpanda-0:9092"]
+#          schemaRegistry:
+#            enabled: true
+#            urls: ["http://redpanda-0:8081"]
+#        redpanda:
+#          adminApi:
+#            enabled: true
+#            urls: ["http://redpanda-0:9644"]
 #    ports:
-#      - 18080:8080
-    depends_on:
-      - redpanda-0
-    labels:
-      - "traefik.http.routers.redpanda-console.rule=Host(`redpanda-console.docker.localhost`)"
-      - "traefik.http.services.redpanda-console.loadbalancer.server.port=8080"
+#      - 8080:8080
+#    depends_on:
+#      - redpanda-0
+
+networks:
+  gateway_flowcontroller_network:
+    driver: bridge
 
 volumes:
   etcd_data:

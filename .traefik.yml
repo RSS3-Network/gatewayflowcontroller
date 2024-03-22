@@ -11,5 +11,5 @@ testData:
   ConnectorRPC: "" # Disable
   MaxSources: 65536
   Average: 20
-  Period: "1m"
+  Period: 60
   Burst: 60

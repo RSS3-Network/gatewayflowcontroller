@@ -10,7 +10,6 @@ import (
 	"net/rpc"
 	"sync"
 	"testing"
-	"time"
 
 	flowcontroller "github.com/RSS3-Network/gatewayflowcontroller"
 	"github.com/RSS3-Network/gatewayflowcontroller/connector"
@@ -83,7 +82,7 @@ func TestFull(t *testing.T) {
 	// Prepare plugin
 	cfg := flowcontroller.CreateConfig()
 
-	cfg.Period = 30 * time.Second
+	cfg.Period = 30
 	cfg.Average = 5
 	cfg.Burst = 10
 

@@ -20,10 +20,10 @@ type Config struct {
 	ConnectorRPC string `json:"connector_rpc,omitempty"`
 
 	// Rate Limit
-	MaxSources int           `json:"max_sources,omitempty"`
-	Average    int64         `json:"average,omitempty"`
-	Period     time.Duration `json:"period,omitempty"`
-	Burst      int64         `json:"burst,omitempty"`
+	MaxSources int   `json:"max_sources,omitempty"`
+	Average    int64 `json:"average,omitempty"`
+	Period     int64 `json:"period,omitempty"`
+	Burst      int64 `json:"burst,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
@@ -33,7 +33,7 @@ func CreateConfig() *Config {
 		ConnectorRPC: "",          // Disable connector
 		MaxSources:   65535,
 		Average:      20,
-		Period:       time.Minute,
+		Period:       60,
 		Burst:        60,
 	}
 }

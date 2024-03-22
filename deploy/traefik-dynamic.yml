@@ -3,4 +3,9 @@ http:
     gfc:
       plugin:
         flowcontroller:
-          ConnectorRPC: connector:1234
+          KeyHeader: "X-API-Key"
+          ConnectorRPC: "connector:1234"
+          MaxSources: 65536
+          Average: 20
+          Period: 60
+          Burst: 60

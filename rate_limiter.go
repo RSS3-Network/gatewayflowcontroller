@@ -40,14 +40,14 @@ type RateLimiter struct {
 
 // Burst is the maximum number of requests allowed to arrive in the same arbitrarily small period of time.
 
-func NewRateLimiter(maxSources int, average int64, period time.Duration, burst int64) (*RateLimiter, error) {
+func NewRateLimiter(maxSources int, average int64, period int64, burst int64) (*RateLimiter, error) {
 	// Tweak configurations
 	if maxSources <= 0 {
 		return nil, fmt.Errorf("invalid max sources")
 	}
 
-	if period <= 0 {
-		period = time.Second
+	if period < 1 {
+		period = 1
 	}
 
 	if burst < 1 {
@@ -64,7 +64,7 @@ func NewRateLimiter(maxSources int, average int64, period time.Duration, burst i
 	var maxDelay time.Duration
 
 	if average > 0 {
-		rtl = float64(average*int64(time.Second)) / float64(period)
+		rtl = float64(average) / float64(period)
 		// maxDelay does not scale well for rates below 1,
 		// so we just cap it to the corresponding value, i.e. 0.5s, in order to keep the effective rate predictable.
 		// One alternative would be to switch to a no-reservation mode (Allow() method) whenever we are in such a low rate regime.
