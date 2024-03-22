@@ -19,7 +19,6 @@ services:
       - ./traefik-dynamic.yml:/etc/traefik/dynamic.yml
     depends_on:
       - connector
-      - whoami
 
   connector:
     # image:
