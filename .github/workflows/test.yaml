@@ -3,7 +3,11 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "deploy/**"
   pull_request:
+    paths-ignore:
+      - "deploy/**"
 
 jobs:
   test:
