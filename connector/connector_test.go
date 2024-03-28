@@ -31,7 +31,7 @@ func prepareRPC(t *testing.T) (string, func()) {
 	}
 
 	// Create control reader
-	controlReader, err := control.NewReader(EtcdEndpoints)
+	controlReader, err := control.NewReader(EtcdEndpoints, nil, nil)
 
 	if err != nil {
 		t.Fatal(fmt.Errorf("create control reader: %w", err))
@@ -223,7 +223,7 @@ func testControlRPC(t *testing.T, rpcClient *rpc.Client) {
 	etcdEndpoints := []string{"localhost:2379"}
 
 	// Create writer client
-	writer, err := control.NewWriter(etcdEndpoints)
+	writer, err := control.NewWriter(etcdEndpoints, nil, nil)
 
 	if err != nil {
 		t.Fatal(fmt.Errorf("create writer: %w", err))

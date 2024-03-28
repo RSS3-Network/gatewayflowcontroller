@@ -48,7 +48,7 @@ func prepareRPC(t *testing.T) (string, func()) {
 	}
 
 	// Create control reader
-	controlReader, err := control.NewReader(EtcdEndpoints)
+	controlReader, err := control.NewReader(EtcdEndpoints, nil, nil)
 
 	if err != nil {
 		t.Fatal(fmt.Errorf("create control reader: %w", err))
@@ -115,7 +115,7 @@ func TestFull(t *testing.T) {
 	defer accesslogConsumer.Stop()
 
 	// Create control writer
-	controlWriter, err := control.NewWriter(EtcdEndpoints)
+	controlWriter, err := control.NewWriter(EtcdEndpoints, nil, nil)
 
 	if err != nil {
 		t.Fatal(fmt.Errorf("create control writer: %w", err))

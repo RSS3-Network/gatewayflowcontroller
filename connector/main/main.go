@@ -59,7 +59,7 @@ func prepare() (*net.Listener, *accesslog.ProducerClient, *control.StateClientRe
 
 	if len(config.EtcdEndpoints) > 0 {
 		// Initialize control
-		if controlClient, err = control.NewReader(config.EtcdEndpoints); err != nil {
+		if controlClient, err = control.NewReader(config.EtcdEndpoints, config.EtcdUsername, config.EtcdPassword); err != nil {
 			return nil, nil, nil, fmt.Errorf("init controller: %w", err)
 		}
 	} else {

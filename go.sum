@@ -19,8 +19,8 @@ github.com/pierrec/lz4/v4 v4.1.21 h1:yOVMLb6qSIDP67pl/5F7RepeKYu/VmTyEXvuMI5d9mQ
 github.com/pierrec/lz4/v4 v4.1.21/go.mod h1:gZWDp/Ze/IJXGXf23ltt2EXimqmTUXEy0GFuRQyBid4=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 h1:Jamvg5psRIccs7FGNTlIRMkT8wgtp5eCXdBlqhYGL6U=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/rss3-network/gateway-common v0.0.2 h1:jedQK2FgsA1U8V/4evmgi1Y2vBiQlb3PoedErVgKQLk=
-github.com/rss3-network/gateway-common v0.0.2/go.mod h1:X/lIV45Pd/41eTUChMJP2JEt9d3kKF8R56QfzF+Zhio=
+github.com/rss3-network/gateway-common v0.0.3 h1:KNeKrzU1xxjHrau938K5X3tKt78sXQ9hZYKnHPSf6BY=
+github.com/rss3-network/gateway-common v0.0.3/go.mod h1:X/lIV45Pd/41eTUChMJP2JEt9d3kKF8R56QfzF+Zhio=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/twmb/franz-go v1.16.1 h1:rpWc7fB9jd7TgmCyfxzenBI+QbgS8ZfJOUQE+tzPtbE=

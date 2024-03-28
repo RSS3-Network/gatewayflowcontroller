@@ -3,7 +3,7 @@ module github.com/RSS3-Network/gatewayflowcontroller
 go 1.21.4
 
 require (
-	github.com/rss3-network/gateway-common v0.0.2
+	github.com/rss3-network/gateway-common v0.0.3
 	golang.org/x/time v0.5.0
 	gopkg.in/yaml.v3 v3.0.1
 )
